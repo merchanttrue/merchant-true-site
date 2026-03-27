@@ -632,7 +632,7 @@
             // Supabase Integration
             const SUPABASE_URL = 'https://gqmraftsnggtzidharpr.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxbXJhZnRzbmdndHppZGhhcnByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjQwNjEsImV4cCI6MjA5MDA0MDA2MX0.gKAjBaeI_hwJxGn6NqvKGSydri8ODloakVjT3Ur1VQQ';
-            const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
     
             const auditForm = document.getElementById('audit-form');
             const submitBtn = document.getElementById('submit-btn');
@@ -643,10 +643,7 @@
                 auditForm.addEventListener('submit', async (e) => {
                     e.preventDefault();
                     
-                    if (!supabase) {
-                        showMessage('Supabase configuration missing.', 'text-error');
-                        return;
-                    }
+
     
                     const name = document.getElementById('user-name').value;
                     const email = document.getElementById('user-email').value;
