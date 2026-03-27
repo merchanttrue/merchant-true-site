@@ -630,8 +630,8 @@
             }
     
             // Supabase Integration
-            const SUPABASE_URL = 'YOUR_SUPABASE_URL_HERE'; // Replace with env var in production
-            const SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY_HERE'; // Replace with env var in production
+            const SUPABASE_URL = window.__env?.SUPABASE_URL || '';
+            const SUPABASE_ANON_KEY = window.__env?.SUPABASE_ANON_KEY || '';
             const supabase = window.supabase ? window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
     
             const auditForm = document.getElementById('audit-form');
@@ -660,14 +660,14 @@
                         // 1. Upload file to Supabase Storage
                         const fileName = `${Date.now()}_${file.name.replace(/[^a-zA-Z0-9.]/g, '_')}`;
                         const { data: uploadData, error: uploadError } = await supabase.storage
-                            .from('statements')
+                            .from('merchant-files')
                             .upload(`${email}/${fileName}`, file);
     
                         if (uploadError) throw uploadError;
     
                         // 2. Get Public URL
                         const { data: { publicUrl } } = supabase.storage
-                            .from('statements')
+                            .from('merchant-files')
                             .getPublicUrl(`${email}/${fileName}`);
     
                         // 3. Call Send Email API
