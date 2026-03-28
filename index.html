@@ -3,6 +3,7 @@
 <head>
     <meta charset="utf-8"/>
     <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <meta http-equiv="Cache-Control" content="no-store" />
     <title>Merchant True | Your Independent Financial Advocate</title>
     <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
@@ -634,7 +635,10 @@
             // Supabase Integration
             const SUPABASE_URL = 'https://gqmraftsnggtzidharpr.supabase.co';
             const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImdxbXJhZnRzbmdndHppZGhhcnByIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ0NjQwNjEsImV4cCI6MjA5MDA0MDA2MX0.gKAjBaeI_hwJxGn6NqvKGSydri8ODloakVjT3Ur1VQQ';
-            const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            if (!window._supabaseClient) {
+                window._supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+            }
+            const supabase = window._supabaseClient;
     
             const auditForm = document.getElementById('audit-form');
             const submitBtn = document.getElementById('submit-btn');
@@ -672,6 +676,16 @@
                         const { data: { publicUrl } } = supabase.storage
                             .from('merchant-files')
                             .getPublicUrl(fileName);
+
+                        // 2b. Record submission in DB
+                        const { error: dbError } = await supabase
+                            .from('submissions')
+                            .insert([{
+                                name,
+                                email,
+                                file_url: publicUrl
+                            }]);
+                        if (dbError) throw dbError;
     
                         // 3. Call Send Email API
                         const response = await fetch('/api/send-email', {
