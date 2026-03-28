@@ -25,7 +25,7 @@ export default async function handler(req, res) {
     // Email to Merchant True team
     await transporter.sendMail({
       from: `"Merchant True Website" <${process.env.SMTP_USER}>`,
-      to: process.env.CONTACT_EMAIL || 'info@merchanttrue.com',
+      to: process.env.CONTACT_EMAIL || 'contact@merchanttrue.com',
       subject: `New Statement Audit Request from ${name}`,
       text: `
         New Statement Audit Request:
